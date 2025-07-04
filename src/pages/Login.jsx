@@ -1,6 +1,57 @@
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/slices/authSlice";
+
 export default function Login() {
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND}/login`,
+        { email: form.email, password: form.password },
+        { withCredentials: true }
+      );
+
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND}/me`, {
+        withCredentials: true,
+      });
+
+      dispatch(setUser(res.data));
+
+      setSuccess("Login successful!");
+      if (res.data?.role === "admin") {
+        navigate("/admin");
+      } else if (res.data?.role === "campaignOwner") {
+        navigate("/create");
+      } else {
+        navigate("/dashboard");
+      }
+      
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
+    }
+  };
+
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 py-20 bg-gradient-to-br from-green-50 via-white to-green-100">
+    <div
+      className="relative min-h-screen flex items-center justify-center px-4 py-20 bg-gradient-to-br from-green-50 via-white to-green-100"
+      style={{ color: "black" }}
+    >
       <div className="absolute inset-0 -z-10 blur-2xl opacity-60 bg-gradient-to-br from-green-100 via-white to-green-200" />
 
       <div className="w-full max-w-md p-8 bg-white/70 backdrop-blur-xl border border-green-100 rounded-3xl shadow-xl">
@@ -8,25 +59,47 @@ export default function Login() {
           🔐 Login to CrowdSpark
         </h1>
 
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-semibold text-green-800 mb-1">Email</label>
+            <label className="block text-sm font-semibold text-green-800 mb-1">
+              Email
+            </label>
             <input
               type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
               placeholder="you@example.com"
-              className="w-full px-4 py-3 rounded-xl border border-green-200 bg-white/80 text-black placeholder-black/60 shadow-inner focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+              className="w-full px-4 py-3 rounded-xl border border-green-200 bg-white/80"
+              required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-green-800 mb-1">Password</label>
+            <label className="block text-sm font-semibold text-green-800 mb-1">
+              Password
+            </label>
             <input
               type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
               placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl border border-green-200 bg-white/80 text-black placeholder-black/60 shadow-inner focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+              className="w-full px-4 py-3 rounded-xl border border-green-200 bg-white/80"
+              required
             />
           </div>
 
+          {error && (
+            <div className="text-red-600 text-sm font-medium -mt-2">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="text-green-600 text-sm font-medium -mt-2">
+              {success}
+            </div>
+          )}
 
           <button
             type="submit"
@@ -38,7 +111,10 @@ export default function Login() {
 
         <p className="text-sm text-center text-gray-600 mt-6">
           New to CrowdSpark?{" "}
-          <a href="/register" className="text-green-600 font-semibold hover:underline">
+          <a
+            href="/register"
+            className="text-green-600 font-semibold hover:underline"
+          >
             Create an account
           </a>
         </p>

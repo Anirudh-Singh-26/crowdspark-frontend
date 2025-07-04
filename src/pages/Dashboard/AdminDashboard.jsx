@@ -2,128 +2,139 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function AdminDashboard() {
-  const [campaigns, setCampaigns] = useState([
-    {
-      id: "1",
-      title: "Community Health Drive",
-      creator: "Ravi Kumar",
-      raised: 5000,
-      goal: 10000,
-    },
-    {
-      id: "2",
-      title: "Books for All",
-      creator: "Meera Patel",
-      raised: 2500,
-      goal: 8000,
+  const [campaigns, setCampaigns] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchAdminData = async () => {
+    try {
+      const [campaignRes, userRes] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_BACKEND}/admin/campaigns`, {
+          withCredentials: true,
+        }),
+        axios.get(`${import.meta.env.VITE_BACKEND}/admin/users`, {
+          withCredentials: true,
+        }),
+      ]);
+
+      setCampaigns(Array.isArray(campaignRes.data) ? campaignRes.data : []);
+      setUsers(Array.isArray(userRes.data) ? userRes.data : []);
+    } catch (err) {
+      console.error("Admin fetch error:", err);
+    } finally {
+      setLoading(false);
     }
-  ]);
-
-  const [users, setUsers] = useState([
-    { id: "u1", name: "Ravi Kumar", email: "ravi@example.com", role: "user" },
-    { id: "u2", name: "Meera Patel", email: "meera@example.com", role: "user" },
-    { id: "u3", name: "Admin User", email: "admin@example.com", role: "admin" }
-  ]);
-
-  const [isLoading, setIsLoading] = useState(true);
+  };
 
   useEffect(() => {
-    const fetchAdminData = async () => {
-      try {
-        const [campaignRes, userRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/campaigns`),
-          axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/users`)
-        ]);
-        if (campaignRes.data?.length > 0) setCampaigns(campaignRes.data);
-        if (userRes.data?.length > 0) setUsers(userRes.data);
-      } catch (err) {
-        console.warn("Backend unreachable. Using dummy data.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchAdminData();
   }, []);
 
-  if (isLoading) {
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      await axios.delete(`${import.meta.env.VITE_BACKEND}/admin/users/${userId}`, {
+        withCredentials: true,
+      });
+      setUsers((prev) => prev.filter((u) => u._id !== userId));
+    } catch (err) {
+      console.error("User delete failed:", err);
+    }
+  };
+
+  const handleDeleteCampaign = async (campaignId) => {
+    if (!window.confirm("Are you sure you want to delete this campaign?"))
+      return;
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND}/admin/campaigns/${campaignId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setCampaigns((prev) => prev.filter((c) => c._id !== campaignId));
+    } catch (err) {
+      console.error("Campaign delete failed:", err);
+    }
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-red-500 mb-4 mx-auto"></div>
-          <p className="text-red-700 font-semibold">Loading admin data...</p>
-        </div>
-      </div>
+      <div className="p-8 text-center text-gray-600 text-lg">Loading...</div>
     );
   }
 
   return (
-    <div className="min-h-screen px-4 py-8 bg-gray-50">
-      <h1 className="text-4xl font-bold text-red-700 mb-10 text-center">🛠 Admin Panel</h1>
+    <div className="p-8 max-w-7xl mx-auto">
+      <h1 className="text-3xl font-bold text-green-700 mb-8">
+        👨‍💼 Admin Dashboard
+      </h1>
 
-      {/* Campaign Table */}
+      {/* Campaigns Section */}
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">All Campaigns</h2>
-        <div className="overflow-x-auto bg-white rounded-xl shadow">
-          <table className="w-full text-sm text-left text-gray-700">
-            <thead className="bg-red-100 text-red-800 uppercase text-xs">
-              <tr>
-                <th className="px-6 py-3">Title</th>
-                <th className="px-6 py-3">Creator</th>
-                <th className="px-6 py-3">Raised</th>
-                <th className="px-6 py-3">Goal</th>
-                <th className="px-6 py-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {campaigns.map((c) => (
-                <tr key={c.id} className="border-b">
-                  <td className="px-6 py-4 font-medium">{c.title}</td>
-                  <td className="px-6 py-4">{c.creator}</td>
-                  <td className="px-6 py-4">₹{c.raised}</td>
-                  <td className="px-6 py-4">₹{c.goal}</td>
-                  <td className="px-6 py-4 text-center">
-                    <button className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full hover:bg-green-200 transition mr-2">Approve</button>
-                    <button className="text-sm bg-red-100 text-red-700 px-3 py-1 rounded-full hover:bg-red-200 transition">Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          📢 All Campaigns
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {campaigns.length > 0 ? (
+            campaigns.map((campaign) => (
+              <div
+                key={campaign._id}
+                className="bg-white p-6 rounded-xl shadow border border-green-100"
+              >
+                <h3 className="text-xl font-bold text-green-700">
+                  {campaign.title}
+                </h3>
+                <p className="text-gray-600 mb-2">
+                  👤 Created by: {campaign.owner?.username || "Unknown"}
+                </p>
+                <p className="text-gray-600">
+                  💰 Raised: ₹{campaign.raisedAmount} / ₹{campaign.goalAmount}
+                </p>
+                <button
+                  onClick={() => handleDeleteCampaign(campaign._id)}
+                  className="mt-3 px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 text-sm"
+                >
+                  Delete Campaign
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No campaigns yet</p>
+          )}
         </div>
       </section>
 
-      {/* Users Table */}
+      {/* Users Section */}
       <section>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">All Users</h2>
-        <div className="overflow-x-auto bg-white rounded-xl shadow">
-          <table className="w-full text-sm text-left text-gray-700">
-            <thead className="bg-red-100 text-red-800 uppercase text-xs">
-              <tr>
-                <th className="px-6 py-3">Name</th>
-                <th className="px-6 py-3">Email</th>
-                <th className="px-6 py-3">Role</th>
-                <th className="px-6 py-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr key={u.id} className="border-b">
-                  <td className="px-6 py-4 font-medium">{u.name}</td>
-                  <td className="px-6 py-4">{u.email}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${u.role === 'admin' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-700'}`}>
-                      {u.role}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <button className="text-sm bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full hover:bg-yellow-200 transition mr-2">Block</button>
-                    <button className="text-sm bg-red-100 text-red-700 px-3 py-1 rounded-full hover:bg-red-200 transition">Remove</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          👥 Registered Users
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {users.length > 0 ? (
+            users.map((user) => (
+              <div
+                key={user._id}
+                className="bg-white p-6 rounded-xl shadow border border-green-100"
+              >
+                <h3 className="text-lg font-bold text-green-700">
+                  {user.username}
+                </h3>
+                <p className="text-gray-600">📧 {user.email}</p>
+                <p className="text-gray-600">🔖 Role: {user.role}</p>
+                <button
+                  onClick={() => handleDeleteUser(user._id)}
+                  className="mt-3 px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 text-sm"
+                >
+                  Delete User
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No users found</p>
+          )}
         </div>
       </section>
     </div>

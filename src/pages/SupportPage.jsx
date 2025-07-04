@@ -1,36 +1,79 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import RazorpayCheckout from "../components/RazorpayCheckout";
+import socket from "../components/Socket";
 
 export default function SupportPage() {
   const { id } = useParams();
 
   const [campaign, setCampaign] = useState(null);
+  const [amount, setAmount] = useState("");
+  const [message, setMessage] = useState("");
+  const [loadingCampaign, setLoadingCampaign] = useState(true);
+  const [feedback, setFeedback] = useState("");
+  const [hasAttempted, setHasAttempted] = useState(false);
+
+  const fetchCampaign = async () => {
+    setLoadingCampaign(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND}/campaigns/${id}`);
+      const data = await res.json();
+      if (data && data._id) {
+        setCampaign(data);
+      } else {
+        setCampaign(null);
+      }
+    } catch (err) {
+      console.error("Error fetching campaign:", err);
+      setCampaign(null);
+    } finally {
+      setLoadingCampaign(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchCampaign = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.BACKEND_URL}/api/campaigns/${id}`);
-        if (res.data && res.data._id) {
-          setCampaign(res.data);
-          return;
-        }
-      } catch (err) {
-        console.warn("Backend fetch failed. Using fallback.");
-      }
-
-      setCampaign({
-        _id: id,
-        title: "Empower Girls Through Education",
-        raised: 5600,
-        goal: 8000,
-      });
-    };
-
     fetchCampaign();
   }, [id]);
 
-  if (!campaign) return <div className="text-center py-20">Loading...</div>;
+  const progress = campaign
+    ? Math.min((campaign.raisedAmount / campaign.goalAmount) * 100, 100)
+    : 0;
+
+  if (loadingCampaign) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-green-600 text-xl font-semibold">
+        <svg
+          className="animate-spin mr-3 h-6 w-6 text-green-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8H4z"
+          ></path>
+        </svg>
+        Loading campaign details...
+      </div>
+    );
+  }
+
+  if (!campaign) {
+    return (
+      <div className="text-center py-20 text-red-500">
+        Campaign not found or still loading.
+      </div>
+    );
+  }
 
   return (
     <div className="relative max-w-2xl mx-auto px-6 py-20 text-green-900">
@@ -40,51 +83,98 @@ export default function SupportPage() {
         🌱 Support This Campaign
       </h1>
 
+      {/* Campaign Info */}
       <div className="bg-white/60 backdrop-blur-md border border-green-200 rounded-3xl shadow-2xl p-8 mb-12 transition hover:shadow-green-200">
-        <h2 className="text-2xl font-semibold mb-2 text-green-800">{campaign?.title}</h2>
-        <p className="text-sm text-gray-500 mb-4">Campaign ID: {id}</p>
+        <h2 className="text-2xl font-semibold mb-2 text-green-800">
+          {campaign.title}
+        </h2>
+        <p className="text-sm text-gray-500 mb-4">
+          Campaign ID: {campaign._id}
+        </p>
 
         <div className="h-3 w-full bg-green-100 rounded-full overflow-hidden mb-2">
           <div
             className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-1000"
-            style={{
-              width: `${(campaign?.raised / campaign?.goal) * 100}%`,
-            }}
+            style={{ width: `${progress}%` }}
           />
         </div>
         <p className="text-sm text-green-800 font-medium">
-          ₹{campaign?.raised} raised of ₹{campaign?.goal} goal
+          ₹{campaign.raisedAmount} raised of ₹{campaign.goalAmount} goal
         </p>
       </div>
 
-      <form className="space-y-6 bg-white/70 backdrop-blur-lg border border-green-100 rounded-3xl shadow-lg p-8">
+      {/* Donation Form */}
+      <div className="space-y-6 bg-white/70 backdrop-blur-lg border border-green-100 rounded-3xl shadow-lg p-8">
         <div>
-          <label className="block text-sm font-semibold text-green-800 mb-1">💸 Amount (₹)</label>
+          <label className="block text-sm font-semibold text-green-800 mb-1">
+            💸 Amount (₹)
+          </label>
           <input
             type="number"
+            value={amount}
+            onChange={(e) => {
+              setAmount(e.target.value);
+              setHasAttempted(true);
+            }}
             placeholder="Enter amount"
             className="w-full px-4 py-2 rounded-xl border border-green-200 bg-white/80 text-green-900 placeholder-green-400 shadow-inner focus:outline-none focus:ring-2 focus:ring-green-300 transition"
+            required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-green-800 mb-1">📝 Message (optional)</label>
+          <label className="block text-sm font-semibold text-green-800 mb-1">
+            📝 Message (optional)
+          </label>
           <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             placeholder="Say something encouraging..."
             className="w-full px-4 py-2 rounded-xl border border-green-200 bg-white/80 text-green-900 placeholder-green-400 shadow-inner resize-none focus:outline-none focus:ring-2 focus:ring-green-300 transition"
             rows="3"
           />
         </div>
 
-        <div className="text-center pt-4">
-          <button
-            type="submit"
-            className="px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-lg rounded-full shadow-md hover:from-green-600 hover:to-green-700 transition-transform transform hover:scale-105"
+        {feedback && (
+          <div
+            className={`text-center text-sm font-medium ${
+              feedback.includes("Thank you") ? "text-green-700" : "text-red-600"
+            }`}
           >
-            ✅ Confirm & Donate
-          </button>
+            {feedback}
+          </div>
+        )}
+
+        <div className="text-center pt-4">
+          {amount && parseInt(amount) > 0 ? (
+            <RazorpayCheckout
+              amount={Number(amount)}
+              campaignId={id}
+              message={message}
+              onSuccess={() => {
+                // ⬅️ Real-time event emit on successful donation
+                socket.emit("donationMade", {
+                  campaignId: id,
+                  amount: Number(amount),
+                  message,
+                });
+
+                setAmount("");
+                setMessage("");
+                setHasAttempted(false);
+                setFeedback("🎉 Thank you for your support!");
+                fetchCampaign();
+              }}
+            />
+          ) : (
+            hasAttempted && (
+              <p className="text-sm text-red-600">
+                Please enter a valid amount
+              </p>
+            )
+          )}
         </div>
-      </form>
+      </div>
     </div>
   );
 }

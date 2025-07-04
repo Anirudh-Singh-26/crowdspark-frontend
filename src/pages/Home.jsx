@@ -1,64 +1,25 @@
 import { useEffect, useState } from "react";
+import axios from "axios"
 import CampaignCard from "../components/CampaignCard";
 
 export default function Home() {
   const [campaigns, setCampaigns] = useState([]);
 
   useEffect(() => {
-    const dummyData = [
-      {
-        _id: "1",
-        image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
-        title: "Green Energy for All",
-        description: "Help us bring affordable solar energy to rural villages.",
-        raised: 3400,
-        goal: 10000,
-      },
-      {
-        _id: "2",
-        image: "https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=800&q=80",
-        title: "Empower Girls Through Education",
-        description: "Sponsor school supplies and tuition for girls in need.",
-        raised: 5600,
-        goal: 8000,
-      },
-      {
-        _id: "3",
-        image: "https://images.unsplash.com/photo-1581090700227-1e37b190418e?auto=format&fit=crop&w=800&q=80",
-        title: "Medical Aid for All",
-        description: "Support rural clinics with essential medical supplies and staff.",
-        raised: 5100,
-        goal: 9000,
-      },
-      {
-        _id: "4",
-        image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=800&q=80",
-        title: "Coding for Kids",
-        description: "Introduce tech education in underserved areas.",
-        raised: 4800,
-        goal: 7500,
-      },
-      
-      {
-        _id: "6",
-        image: "https://images.unsplash.com/photo-1533750516457-a7f992034fec?auto=format&fit=crop&w=800&q=80",
-        title: "Clean Up the Coast",
-        description: "Organize beach clean-up drives and awareness campaigns.",
-        raised: 7200,
-        goal: 12000,
-      },
-      {
-        _id: "5",
-        image: "https://images.unsplash.com/photo-1526406915894-7bcd65f60845?auto=format&fit=crop&w=800&q=80",
-        title: "Animal Shelter Rescue",
-        description: "Fund rescue and care for abandoned animals.",
-        raised: 6200,
-        goal: 10000,
+    const fetchCampaigns = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND}/campaigns`);
+        console.log(res.data);
+        if (Array.isArray(res.data)) {
+          setCampaigns(res.data);
+        }
+      } catch (err) {
+        console.error("Error fetching campaigns:", err.message);
       }
-    ];
-    setCampaigns(dummyData);
-  }, []);
+    };
 
+    fetchCampaigns();
+  }, []);
   return (
     <div className="bg-white text-gray-800">
       {/* Hero Section */}
