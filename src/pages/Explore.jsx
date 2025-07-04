@@ -19,6 +19,7 @@ export default function Explore() {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
+        console.log(`${import.meta.env.VITE_BACKEND}/campaigns`);
         const res = await axios.get(`${import.meta.env.VITE_BACKEND}/campaigns`);
         console.log(res.data)
         if (Array.isArray(res.data)) {
