@@ -64,10 +64,32 @@ const Navbar = () => {
   return (
     <nav className="bg-white/90 backdrop-blur shadow-md sticky top-0 z-50 transition-all">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        {/* Logo */}
         <Link to="/" className="text-2xl font-bold text-green-600">
           CrowdSpark
         </Link>
 
+        {/* Hamburger Icon - Mobile Only */}
+        <button
+          className="md:hidden text-gray-700 focus:outline-none"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d={menuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+            />
+          </svg>
+        </button>
+
+        {/* Desktop Nav */}
         <div className="hidden md:flex space-x-6 items-center">
           {isAdmin && (
             <Link
@@ -107,7 +129,7 @@ const Navbar = () => {
                 <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-green-500 transition-all group-hover:w-full" />
               </Link>
 
-              {/* 🔔 Notification Bell */}
+              {/* Notification Bell */}
               <div className="relative cursor-pointer">
                 <div onClick={() => setShowNotifications((prev) => !prev)}>
                   <svg
@@ -172,8 +194,60 @@ const Navbar = () => {
           )}
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className="md:hidden px-4 pb-4 space-y-3">
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="block text-gray-700 hover:text-green-600"
+            >
+              Admin
+            </Link>
+          )}
+          {(isAdmin || isCampaignOwner) && (
+            <Link
+              to="/create"
+              className="block text-gray-700 hover:text-green-600"
+            >
+              Create Campaign
+            </Link>
+          )}
+          <Link
+            to="/explore"
+            className="block text-gray-700 hover:text-green-600"
+          >
+            Explore
+          </Link>
+          {user && (
+            <Link
+              to="/dashboard"
+              className="block text-gray-700 hover:text-green-600"
+            >
+              Dashboard
+            </Link>
+          )}
+          {!user ? (
+            <Link
+              to="/login"
+              className="block bg-gradient-to-r from-green-500 to-green-600 text-white px-5 py-2 rounded-full text-center hover:from-green-600 hover:to-green-700 shadow-lg transition"
+            >
+              Login / Register
+            </Link>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="block w-full bg-red-500 text-white px-5 py-2 rounded-full hover:bg-red-600 shadow-lg transition"
+            >
+              Logout
+            </button>
+          )}
+        </div>
+      )}
     </nav>
   );
+  
 };
 
 export default Navbar;
