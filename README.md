@@ -2,6 +2,8 @@
 
 This is the frontend for **CrowdSpark**, a MERN-based crowdfunding platform. It is built using **React**, **Redux**, **Tailwind CSS**, and integrates features such as role-based dashboards, campaign discovery, real-time notifications, and secure payments.
 
+For the Backend part Please visit the CrowdSpard-backend repo or link-> https://github.com/Anirudh-Singh-26/crowdspark-backend
+
 ## 🔗 Live Demo
 
 [https://crowdspark-frontend.vercel.app](https://crowdspark-frontend.vercel.app)
@@ -62,4 +64,4 @@ npm run build
 
 ## 📘 License
 
-MIT © [Your Name]
+MIT © Anirudh Singh Rathore
