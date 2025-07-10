@@ -29,6 +29,7 @@ export default function Home() {
       didCancel = true;
     };
   }, []);
+  console.log(campaigns);
 
   return (
     <div className="bg-white text-gray-800">
@@ -117,84 +118,97 @@ export default function Home() {
       </section>
 
       {/* Campaigns Section */}
+      {/* Campaigns Section */}
       <section className="px-4 py-16 max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold mb-6">🔥 Trending Campaigns</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {campaigns
-            .filter(
-              (campaign) =>
-                typeof campaign.raised === "number" &&
-                typeof campaign.goal === "number" &&
-                campaign.goal > 0 &&
-                campaign.raised / campaign.goal > 0.5
-            )
-            .map((campaign) => {
-              const percentage = Math.min(
-                (campaign.raised / campaign.goal) * 100,
-                100
-              );
+          {campaigns.filter(
+            (c) =>
+              typeof c.raised === "number" &&
+              typeof c.goal === "number" &&
+              c.goal > 0 &&
+              c.raised / c.goal > 0.5
+          ).length === 0 ? (
+            <p className="text-gray-500 col-span-full">
+              No trending campaigns right now. Check back soon!
+            </p>
+          ) : (
+            campaigns
+              .filter(
+                (campaign) =>
+                  typeof campaign.raised === "number" &&
+                  typeof campaign.goal === "number" &&
+                  campaign.goal > 0 &&
+                  campaign.raised / campaign.goal > 0.5
+              )
+              .map((campaign) => {
+                const percentage = Math.min(
+                  (campaign.raised / campaign.goal) * 100,
+                  100
+                );
 
-              const formattedRaised = new Intl.NumberFormat("en-IN", {
-                style: "currency",
-                currency: "INR",
-              }).format(campaign.raised);
+                const formattedRaised = new Intl.NumberFormat("en-IN", {
+                  style: "currency",
+                  currency: "INR",
+                }).format(campaign.raised);
 
-              const formattedGoal = new Intl.NumberFormat("en-IN", {
-                style: "currency",
-                currency: "INR",
-              }).format(campaign.goal);
+                const formattedGoal = new Intl.NumberFormat("en-IN", {
+                  style: "currency",
+                  currency: "INR",
+                }).format(campaign.goal);
 
-              return (
-                <div
-                  key={campaign._id}
-                  className="relative bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="relative h-48 overflow-hidden rounded-t-xl">
-                    <img
-                      src={campaign.image}
-                      alt={campaign.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                  </div>
-                  <div className="relative z-10 p-5 -mt-6 mx-3 bg-white rounded-xl shadow-lg group-hover:-translate-y-1 transition-all duration-300">
-                    <h3 className="text-xl font-bold text-gray-800 group-hover:text-green-600 transition-colors">
-                      {campaign.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1 mb-3">
-                      {campaign.description}
-                    </p>
-                    <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden mb-2">
-                      <div
-                        className="h-full bg-green-500 rounded-full transition-all duration-500"
-                        style={{ width: `${percentage}%` }}
+                return (
+                  <div
+                    key={campaign._id}
+                    className="relative bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300"
+                  >
+                    <div className="relative h-48 overflow-hidden rounded-t-xl">
+                      <img
+                        src={campaign.image}
+                        alt={campaign.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
                     </div>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-semibold text-green-700">
-                        {formattedRaised}
-                      </span>{" "}
-                      raised of{" "}
-                      <span className="text-gray-500">{formattedGoal}</span>
-                    </p>
-                    <div className="mt-4 flex gap-3">
-                      <a
-                        href={`/campaign/${campaign._id}`}
-                        className="flex-1 text-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-                      >
-                        View Details
-                      </a>
-                      <a
-                        href={`/support/${campaign._id}`}
-                        className="flex-1 text-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
-                      >
-                        Support Now
-                      </a>
+                    <div className="relative z-10 p-5 -mt-6 mx-3 bg-white rounded-xl shadow-lg group-hover:-translate-y-1 transition-all duration-300">
+                      <h3 className="text-xl font-bold text-gray-800 group-hover:text-green-600 transition-colors">
+                        {campaign.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1 mb-3">
+                        {campaign.description}
+                      </p>
+                      <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden mb-2">
+                        <div
+                          className="h-full bg-green-500 rounded-full transition-all duration-500"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold text-green-700">
+                          {formattedRaised}
+                        </span>{" "}
+                        raised of{" "}
+                        <span className="text-gray-500">{formattedGoal}</span>
+                      </p>
+                      <div className="mt-4 flex gap-3">
+                        <a
+                          href={`/campaign/${campaign._id}`}
+                          className="flex-1 text-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                        >
+                          View Details
+                        </a>
+                        <a
+                          href={`/support/${campaign._id}`}
+                          className="flex-1 text-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                        >
+                          Support Now
+                        </a>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+          )}
         </div>
       </section>
 
