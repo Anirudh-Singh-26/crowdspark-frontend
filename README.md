@@ -1,14 +1,65 @@
-# React + Vite
+# 🎨 CrowdSpark Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend for **CrowdSpark**, a MERN-based crowdfunding platform. It is built using **React**, **Redux**, **Tailwind CSS**, and integrates features such as role-based dashboards, campaign discovery, real-time notifications, and secure payments.
 
-Currently, two official plugins are available:
+## 🔗 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[https://crowdspark-frontend.vercel.app](https://crowdspark-frontend.vercel.app)
 
-## Expanding the ESLint configuration
+## 📦 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# crowdSpark
-# crowdspark-frontend
+- React + Vite
+- Redux Toolkit
+- Tailwind CSS
+- Axios
+- Socket.IO Client
+- React Router
+- Razorpay Integration
+
+## ⚙️ Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/YourUsername/crowdspark-frontend.git
+cd crowdspark-frontend
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup `.env` File
+
+```env
+VITE_BACKEND=https://crowdspark-backend.onrender.com
+```
+
+## 🚀 Start the Development Server
+
+```bash
+npm run dev
+```
+
+## 🌟 Features
+
+- 🔐 Authentication with HttpOnly Cookies
+- 🧠 Role-Based Dashboard (Admin, Campaign Owner, Backer)
+- 📢 Campaign Management
+- 💸 Razorpay Payments
+- 📄 Invoice Downloads
+- 📬 Role Upgrade Request System
+- 🔔 Real-Time Notifications via Socket.IO
+- 📊 Admin Panel for user & campaign control
+
+## 📦 Build for Production
+
+```bash
+npm run build
+```
+
+## 📘 License
+
+MIT © [Your Name]

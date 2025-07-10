@@ -1,10 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { setUser } from "./redux/slices/authSlice";
+import axios from "./utils/axiosInstance"; // ✅ Use central axios instance
 
-// 👇 Import socket
 import socket from "./components/Socket";
 
 import Layout from "./layouts/Layout";
@@ -26,13 +25,10 @@ export default function App() {
   const isAdmin = user?.role === "admin";
   const isCampaignOwner = user?.role === "campaignOwner";
 
-  // 👇 Fetch user from /me on initial load
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND}/me`, {
-          withCredentials: true,
-        });
+        const res = await axios.get("/me");
         dispatch(setUser(res.data));
       } catch (err) {
         console.log("Not logged in or token invalid");
@@ -44,11 +40,10 @@ export default function App() {
     fetchUser();
   }, [dispatch]);
 
-  // 👇 Join user's personal socket room if logged in
   useEffect(() => {
     if (user?._id) {
       socket.emit("join", user._id);
-      console.log("🧩 Joined socket room:", user._id);
+      // console.log("🧩 Joined socket room:", user._id);
     }
   }, [user]);
 
@@ -57,7 +52,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* All routes under shared Layout */}
         <Route element={<Layout />}>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />

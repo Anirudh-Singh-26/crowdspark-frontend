@@ -8,20 +8,31 @@ export default function CampaignDetails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController(); // ✅ Add abort controller to cancel if needed
+
     const fetchCampaign = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND}/campaigns/${id}`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND}/campaigns/${id}`,
+          { signal: controller.signal } // ✅ Use signal for cancellation
+        );
         if (res.data && res.data._id) {
           setCampaign(res.data);
         }
       } catch (err) {
-        console.error("Failed to fetch campaign:", err.message);
+        if (axios.isCancel(err)) {
+          // console.log("❌ Request cancelled:", err.message);
+        } else {
+          console.error("Failed to fetch campaign:", err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchCampaign();
+
+    return () => controller.abort(); // ✅ Clean up request on unmount
   }, [id]);
 
   if (loading)
@@ -106,7 +117,7 @@ export default function CampaignDetails() {
         {campaign.owner?.username || "Campaign Owner"}
       </div>
 
-      {/* CTA */}
+      {/* CTA Buttons */}
       <div className="text-center">
         <Link
           to={`/explore`}

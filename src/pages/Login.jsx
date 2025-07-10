@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -20,6 +20,8 @@ export default function Login() {
     setError("");
     setSuccess("");
 
+    let didCancel = false;
+
     try {
       await axios.post(
         `${import.meta.env.VITE_BACKEND}/login`,
@@ -31,20 +33,27 @@ export default function Login() {
         withCredentials: true,
       });
 
-      dispatch(setUser(res.data));
+      if (!didCancel) {
+        dispatch(setUser(res.data));
+        setSuccess("Login successful!");
 
-      setSuccess("Login successful!");
-      if (res.data?.role === "admin") {
-        navigate("/admin");
-      } else if (res.data?.role === "campaignOwner") {
-        navigate("/create");
-      } else {
-        navigate("/dashboard");
+        if (res.data?.role === "admin") {
+          navigate("/admin");
+        } else if (res.data?.role === "campaignOwner") {
+          navigate("/create");
+        } else {
+          navigate("/dashboard");
+        }
       }
-      
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      if (!didCancel) {
+        setError(err.response?.data?.message || "Login failed");
+      }
     }
+
+    return () => {
+      didCancel = true;
+    };
   };
 
   return (

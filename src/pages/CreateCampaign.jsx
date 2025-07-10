@@ -10,30 +10,74 @@ export default function CreateCampaign() {
     image: "",
     deadline: "",
     category: "",
+    imageFile: null,
   });
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [useFileUpload, setUseFileUpload] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setForm((prev) => ({ ...prev, imageFile: file }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     setError("");
     setSuccess("");
 
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND}/campaigns`, form, {
+      let imageUrl = form.image;
+
+      if (useFileUpload && form.imageFile) {
+        const imageData = new FormData();
+        imageData.append("image", form.imageFile);
+
+        const uploadRes = await axios.post(
+          `${import.meta.env.VITE_BACKEND}/upload`,
+          imageData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+            withCredentials: true,
+          }
+        );
+
+        imageUrl = uploadRes.data.imageUrl;
+        // console.log("✅ Image uploaded to Cloudinary:", imageUrl);
+      }
+
+      const payload = {
+        title: form.title,
+        description: form.description,
+        goalAmount: form.goalAmount,
+        deadline: form.deadline,
+        category: form.category,
+        image: imageUrl,
+      };
+
+      await axios.post(`${import.meta.env.VITE_BACKEND}/campaigns`, payload, {
         withCredentials: true,
       });
 
       setSuccess("🎉 Campaign launched successfully!");
       setTimeout(() => navigate("/dashboard"), 1500);
     } catch (err) {
-      console.error(err);
+      console.error("❌ Campaign launch error:", err);
       setError(err.response?.data?.message || "Failed to launch campaign");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -46,10 +90,11 @@ export default function CreateCampaign() {
       </h1>
 
       <form
-        className="space-y-8 bg-white/80 backdrop-blur-xl border border-green-200 rounded-3xl shadow-2xl p-10 transition hover:shadow-green-300"
         onSubmit={handleSubmit}
+        className="space-y-8 bg-white/80 backdrop-blur-xl border border-green-200 rounded-3xl shadow-2xl p-10 transition hover:shadow-green-300"
       >
-        <div className="relative group">
+        {/* Title */}
+        <div>
           <label className="block text-sm font-bold text-green-800 mb-2">
             Campaign Title
           </label>
@@ -58,13 +103,14 @@ export default function CreateCampaign() {
             name="title"
             value={form.title}
             onChange={handleChange}
-            placeholder="E.g., Fund Solar Lights in Rural Areas"
             required
-            className="w-full px-5 py-3 rounded-xl border border-green-200 bg-white/90 text-black placeholder-black/60 shadow-md focus:ring-2 focus:ring-green-400 transition"
+            placeholder="E.g., Fund Solar Lights in Rural Areas"
+            className="w-full px-5 py-3 rounded-xl border border-green-200 shadow-md bg-white"
           />
         </div>
 
-        <div className="relative group">
+        {/* Description */}
+        <div>
           <label className="block text-sm font-bold text-green-800 mb-2">
             Description
           </label>
@@ -72,14 +118,15 @@ export default function CreateCampaign() {
             name="description"
             value={form.description}
             onChange={handleChange}
-            placeholder="Describe the purpose, impact, and who it helps..."
             required
             rows="4"
-            className="w-full px-5 py-3 rounded-xl border border-green-200 bg-white/90 text-black placeholder-black/60 shadow-md resize-none focus:ring-2 focus:ring-green-400 transition"
+            placeholder="Describe the purpose and who it helps..."
+            className="w-full px-5 py-3 rounded-xl border border-green-200 shadow-md resize-none bg-white"
           />
         </div>
 
-        <div className="relative group">
+        {/* Goal Amount */}
+        <div>
           <label className="block text-sm font-bold text-green-800 mb-2">
             Goal Amount (₹)
           </label>
@@ -88,13 +135,14 @@ export default function CreateCampaign() {
             name="goalAmount"
             value={form.goalAmount}
             onChange={handleChange}
-            placeholder="E.g., 10000"
             required
-            className="w-full px-5 py-3 rounded-xl border border-green-200 bg-white/90 text-black placeholder-black/60 shadow-md focus:ring-2 focus:ring-green-400 transition"
+            placeholder="E.g., 10000"
+            className="w-full px-5 py-3 rounded-xl border border-green-200 shadow-md bg-white"
           />
         </div>
 
-        <div className="relative group">
+        {/* Deadline */}
+        <div>
           <label className="block text-sm font-bold text-green-800 mb-2">
             Deadline
           </label>
@@ -104,11 +152,12 @@ export default function CreateCampaign() {
             value={form.deadline}
             onChange={handleChange}
             required
-            className="w-full px-5 py-3 rounded-xl border border-green-200 bg-white/90 text-black shadow-md focus:ring-2 focus:ring-green-400 transition"
+            className="w-full px-5 py-3 rounded-xl border border-green-200 shadow-md bg-white"
           />
         </div>
 
-        <div className="relative group">
+        {/* Category */}
+        <div>
           <label className="block text-sm font-bold text-green-800 mb-2">
             Category
           </label>
@@ -117,33 +166,66 @@ export default function CreateCampaign() {
             name="category"
             value={form.category}
             onChange={handleChange}
-            placeholder="E.g., Health, Education, Environment"
             required
-            className="w-full px-5 py-3 rounded-xl border border-green-200 bg-white/90 text-black shadow-md focus:ring-2 focus:ring-green-400 transition"
+            placeholder="E.g., Health, Education"
+            className="w-full px-5 py-3 rounded-xl border border-green-200 shadow-md bg-white"
           />
         </div>
 
-        <div className="relative group">
+        {/* Image Input Toggle */}
+        <div>
           <label className="block text-sm font-bold text-green-800 mb-2">
-            Cover Image URL
+            Cover Image
           </label>
-          <input
-            type="url"
-            name="image"
-            value={form.image}
-            onChange={handleChange}
-            placeholder="E.g., https://images.unsplash.com/..."
-            required
-            className="w-full px-5 py-3 rounded-xl border border-green-200 bg-white/90 text-black placeholder-black/60 shadow-md focus:ring-2 focus:ring-green-400 transition"
-          />
+
+          <div className="mb-3">
+            <label className="flex items-center gap-4 cursor-pointer">
+              <span className="text-sm font-medium text-green-800">
+                Use File Upload
+              </span>
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  checked={useFileUpload}
+                  onChange={() => setUseFileUpload(!useFileUpload)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-green-200 rounded-full peer peer-checked:bg-green-500 transition-all"></div>
+                <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform peer-checked:translate-x-full shadow-md"></div>
+              </div>
+            </label>
+          </div>
+
+          {useFileUpload ? (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full px-5 py-2 rounded-xl border border-green-200 shadow bg-white text-green-800 
+                       file:bg-white file:text-green-800 file:border file:border-green-300 
+                       file:px-4 file:py-2 file:rounded-md file:shadow-sm"
+            />
+          ) : (
+            <input
+              type="url"
+              name="image"
+              value={form.image}
+              onChange={handleChange}
+              placeholder="E.g., https://images.unsplash.com/..."
+              className="w-full px-5 py-3 rounded-xl border border-green-200 shadow-md bg-white"
+            />
+          )}
         </div>
 
+        {/* Error & Success */}
         {error && <p className="text-red-600 font-medium">{error}</p>}
         {success && <p className="text-green-600 font-medium">{success}</p>}
 
+        {/* Submit */}
         <div className="text-center pt-6">
           <button
             type="submit"
+            disabled={isSubmitting}
             className="px-10 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-lg rounded-full shadow-lg hover:from-green-600 hover:to-green-700 transition-transform transform hover:scale-105"
           >
             🚀 Launch Campaign

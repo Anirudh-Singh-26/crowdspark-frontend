@@ -17,22 +17,30 @@ export default function Explore() {
   ];
 
   useEffect(() => {
+    let didCancel = false;
+
     const fetchCampaigns = async () => {
       try {
-        console.log(`${import.meta.env.VITE_BACKEND}/campaigns`);
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND}/campaigns`);
-        console.log(res.data)
-        if (Array.isArray(res.data)) {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND}/campaigns`
+        );
+        if (!didCancel && Array.isArray(res.data)) {
           setCampaigns(res.data);
         }
       } catch (err) {
-        console.error("Error fetching campaigns:", err.message);
+        if (!didCancel) {
+          console.error("Error fetching campaigns:", err.message);
+        }
       } finally {
-        setLoading(false);
+        if (!didCancel) setLoading(false);
       }
     };
 
     fetchCampaigns();
+
+    return () => {
+      didCancel = true;
+    };
   }, []);
 
   const filtered = campaigns.filter(

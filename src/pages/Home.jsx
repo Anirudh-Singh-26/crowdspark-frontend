@@ -1,25 +1,35 @@
 import { useEffect, useState } from "react";
-import axios from "axios"
+import axios from "axios";
 import CampaignCard from "../components/CampaignCard";
 
 export default function Home() {
   const [campaigns, setCampaigns] = useState([]);
 
   useEffect(() => {
+    let didCancel = false;
+
     const fetchCampaigns = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND}/campaigns`);
-        console.log(res.data);
-        if (Array.isArray(res.data)) {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND}/campaigns`
+        );
+        if (!didCancel && Array.isArray(res.data)) {
           setCampaigns(res.data);
         }
       } catch (err) {
-        console.error("Error fetching campaigns:", err.message);
+        if (!didCancel) {
+          console.error("Error fetching campaigns:", err.message);
+        }
       }
     };
 
     fetchCampaigns();
+
+    return () => {
+      didCancel = true;
+    };
   }, []);
+
   return (
     <div className="bg-white text-gray-800">
       {/* Hero Section */}
@@ -33,7 +43,8 @@ export default function Home() {
             Fuel Ideas. Fund Dreams. Change Lives.
           </h1>
           <p className="text-lg md:text-xl mb-6 text-gray-700 animate-fade-in-up animation-delay-300">
-            CrowdSpark empowers dreamers to turn their ideas into reality. Back a cause or start your own today.
+            CrowdSpark empowers dreamers to turn their ideas into reality. Back
+            a cause or start your own today.
           </p>
           <a
             href="/create"
@@ -52,19 +63,33 @@ export default function Home() {
           <h2 className="text-3xl font-bold mb-10">Why Choose CrowdSpark?</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="p-6 rounded-lg shadow hover:shadow-xl transition duration-300">
-              <div className="text-green-600 text-4xl mb-4 animate-bounce">🚀</div>
+              <div className="text-green-600 text-4xl mb-4 animate-bounce">
+                🚀
+              </div>
               <h3 className="text-xl font-semibold mb-2">Launch Fast</h3>
-              <p className="text-gray-600">Create and publish your campaign in minutes with our easy-to-use interface.</p>
+              <p className="text-gray-600">
+                Create and publish your campaign in minutes with our easy-to-use
+                interface.
+              </p>
             </div>
             <div className="p-6 rounded-lg shadow hover:shadow-xl transition duration-300">
-              <div className="text-green-600 text-4xl mb-4 animate-bounce">🌍</div>
+              <div className="text-green-600 text-4xl mb-4 animate-bounce">
+                🌍
+              </div>
               <h3 className="text-xl font-semibold mb-2">Global Reach</h3>
-              <p className="text-gray-600">Connect with backers from all around the world to support your cause.</p>
+              <p className="text-gray-600">
+                Connect with backers from all around the world to support your
+                cause.
+              </p>
             </div>
             <div className="p-6 rounded-lg shadow hover:shadow-xl transition duration-300">
-              <div className="text-green-600 text-4xl mb-4 animate-bounce">💡</div>
+              <div className="text-green-600 text-4xl mb-4 animate-bounce">
+                💡
+              </div>
               <h3 className="text-xl font-semibold mb-2">Innovative Ideas</h3>
-              <p className="text-gray-600">Support creative projects that are solving real-world problems.</p>
+              <p className="text-gray-600">
+                Support creative projects that are solving real-world problems.
+              </p>
             </div>
           </div>
         </div>
@@ -106,7 +131,6 @@ export default function Home() {
                   alt={campaign.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
               </div>
               <div className="relative z-10 p-5 -mt-6 mx-3 bg-white rounded-xl shadow-lg group-hover:-translate-y-1 transition-all duration-300">
@@ -119,11 +143,19 @@ export default function Home() {
                 <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden mb-2">
                   <div
                     className="h-full bg-green-500 rounded-full transition-all duration-500"
-                    style={{ width: `${(campaign.raised / campaign.goal) * 100}%` }}
+                    style={{
+                      width: `${Math.min(
+                        (campaign.raised / campaign.goal) * 100,
+                        100
+                      )}%`,
+                    }}
                   />
                 </div>
                 <p className="text-sm text-gray-700">
-                  <span className="font-semibold text-green-700">{campaign.raised}</span> raised of{" "}
+                  <span className="font-semibold text-green-700">
+                    {campaign.raised}
+                  </span>{" "}
+                  raised of{" "}
                   <span className="text-gray-500">{campaign.goal}</span>
                 </p>
                 <div className="mt-4 flex gap-3">
@@ -151,19 +183,28 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">What Our Backers Say</h2>
           <p className="text-gray-600 mb-10">
-            People around the world trust CrowdSpark to support change-making ideas.
+            People around the world trust CrowdSpark to support change-making
+            ideas.
           </p>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow text-left">
-              <p className="mb-4">"Backing a project on CrowdSpark feels like investing in a better world."</p>
+              <p className="mb-4">
+                "Backing a project on CrowdSpark feels like investing in a
+                better world."
+              </p>
               <span className="font-semibold">– Ananya S., Mumbai</span>
             </div>
             <div className="bg-white p-6 rounded-lg shadow text-left">
-              <p className="mb-4">"The campaign I supported exceeded its goal — and I got updates every step."</p>
+              <p className="mb-4">
+                "The campaign I supported exceeded its goal — and I got updates
+                every step."
+              </p>
               <span className="font-semibold">– Karan P., Delhi</span>
             </div>
             <div className="bg-white p-6 rounded-lg shadow text-left">
-              <p className="mb-4">"We raised enough funds for our robotics lab in just two weeks!"</p>
+              <p className="mb-4">
+                "We raised enough funds for our robotics lab in just two weeks!"
+              </p>
               <span className="font-semibold">– Sneha M., Bengaluru</span>
             </div>
           </div>
@@ -176,7 +217,8 @@ export default function Home() {
             🌊 The Ripple of Impact
           </h2>
           <p className="text-gray-600 mb-10 text-lg">
-            One small act of support creates waves across lives, communities, and the world.
+            One small act of support creates waves across lives, communities,
+            and the world.
           </p>
 
           <div className="relative flex items-center justify-center h-64">
@@ -189,7 +231,10 @@ export default function Home() {
           </div>
 
           <p className="mt-10 text-gray-700">
-            Your single click, your little support, <span className="text-green-700 font-semibold">changes everything.</span>
+            Your single click, your little support,{" "}
+            <span className="text-green-700 font-semibold">
+              changes everything.
+            </span>
           </p>
         </div>
       </section>
@@ -215,7 +260,8 @@ export default function Home() {
             Welcome to the CrowdSpark Galaxy
           </h2>
           <p className="text-lg mb-8 text-gray-200">
-            Each star represents an idea, a dream, a movement — floating until it finds its spark.
+            Each star represents an idea, a dream, a movement — floating until
+            it finds its spark.
           </p>
           <a
             href="/create"

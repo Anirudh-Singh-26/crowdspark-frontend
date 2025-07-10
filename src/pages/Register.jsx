@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -7,6 +7,7 @@ import { setUser } from "../redux/slices/authSlice";
 export default function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -26,6 +27,7 @@ export default function Register() {
     e.preventDefault();
     setError("");
     setSuccess("");
+    let didCancel = false;
 
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match");
@@ -46,29 +48,35 @@ export default function Register() {
           password: form.password,
           role: form.role,
         },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
 
       const res = await axios.get(`${import.meta.env.VITE_BACKEND}/me`, {
         withCredentials: true,
       });
 
-      dispatch(setUser(res.data));
+      if (!didCancel) {
+        dispatch(setUser(res.data));
+        setSuccess("Registration successful! Redirecting...");
 
-      setSuccess("Registration successful! Redirecting...");
-      if (res.data?.role === "admin") {
-        navigate("/admin");
-      } else if (res.data?.role === "campaignOwner") {
-        navigate("/create");
-      } else {
-        navigate("/dashboard");
+        if (res.data?.role === "admin") {
+          navigate("/admin");
+        } else if (res.data?.role === "campaignOwner") {
+          navigate("/create");
+        } else {
+          navigate("/dashboard");
+        }
       }
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Something went wrong");
+      if (!didCancel) {
+        console.error(err);
+        setError(err.response?.data?.message || "Something went wrong");
+      }
     }
+
+    return () => {
+      didCancel = true;
+    };
   };
 
   return (

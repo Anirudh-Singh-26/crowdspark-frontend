@@ -19,7 +19,7 @@ const Navbar = () => {
 
     if (!user || !isCampaignOwner) return;
 
-    console.log("📡 Joining personal socket room:", user._id);
+    // console.log("📡 Joining personal socket room:", user._id);
     socket.emit("join", user._id);
 
     const listener = (data) => {

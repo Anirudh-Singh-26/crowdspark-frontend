@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import RazorpayCheckout from "../components/RazorpayCheckout";
 import socket from "../components/Socket";
 
@@ -13,27 +13,25 @@ export default function SupportPage() {
   const [feedback, setFeedback] = useState("");
   const [hasAttempted, setHasAttempted] = useState(false);
 
-  const fetchCampaign = async () => {
+  const fetchCampaign = useCallback(async () => {
     setLoadingCampaign(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND}/campaigns/${id}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND}/campaigns/${id}`
+      );
       const data = await res.json();
-      if (data && data._id) {
-        setCampaign(data);
-      } else {
-        setCampaign(null);
-      }
+      setCampaign(data && data._id ? data : null);
     } catch (err) {
       console.error("Error fetching campaign:", err);
       setCampaign(null);
     } finally {
       setLoadingCampaign(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchCampaign();
-  }, [id]);
+  }, [fetchCampaign]);
 
   const progress = campaign
     ? Math.min((campaign.raisedAmount / campaign.goalAmount) * 100, 100)
@@ -115,6 +113,7 @@ export default function SupportPage() {
             onChange={(e) => {
               setAmount(e.target.value);
               setHasAttempted(true);
+              setFeedback("");
             }}
             placeholder="Enter amount"
             className="w-full px-4 py-2 rounded-xl border border-green-200 bg-white/80 text-green-900 placeholder-green-400 shadow-inner focus:outline-none focus:ring-2 focus:ring-green-300 transition"
@@ -152,7 +151,6 @@ export default function SupportPage() {
               campaignId={id}
               message={message}
               onSuccess={() => {
-                // ⬅️ Real-time event emit on successful donation
                 socket.emit("donationMade", {
                   campaignId: id,
                   amount: Number(amount),
