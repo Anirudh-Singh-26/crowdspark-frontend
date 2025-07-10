@@ -118,16 +118,16 @@ export default function Home() {
       </section>
 
       {/* Campaigns Section */}
-      {/* Campaigns Section */}
+      {/* Trending Campaigns Section */}
       <section className="px-4 py-16 max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold mb-6">🔥 Trending Campaigns</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {campaigns.filter(
             (c) =>
-              typeof c.raised === "number" &&
-              typeof c.goal === "number" &&
-              c.goal > 0 &&
-              c.raised / c.goal > 0.5
+              typeof c.raisedAmount === "number" &&
+              typeof c.goalAmount === "number" &&
+              c.goalAmount > 0 &&
+              c.raisedAmount / c.goalAmount > 0.5
           ).length === 0 ? (
             <p className="text-gray-500 col-span-full">
               No trending campaigns right now. Check back soon!
@@ -135,27 +135,27 @@ export default function Home() {
           ) : (
             campaigns
               .filter(
-                (campaign) =>
-                  typeof campaign.raised === "number" &&
-                  typeof campaign.goal === "number" &&
-                  campaign.goal > 0 &&
-                  campaign.raised / campaign.goal > 0.5
+                (c) =>
+                  typeof c.raisedAmount === "number" &&
+                  typeof c.goalAmount === "number" &&
+                  c.goalAmount > 0 &&
+                  c.raisedAmount / c.goalAmount > 0.5
               )
               .map((campaign) => {
                 const percentage = Math.min(
-                  (campaign.raised / campaign.goal) * 100,
+                  (campaign.raisedAmount / campaign.goalAmount) * 100,
                   100
                 );
 
                 const formattedRaised = new Intl.NumberFormat("en-IN", {
                   style: "currency",
                   currency: "INR",
-                }).format(campaign.raised);
+                }).format(campaign.raisedAmount);
 
                 const formattedGoal = new Intl.NumberFormat("en-IN", {
                   style: "currency",
                   currency: "INR",
-                }).format(campaign.goal);
+                }).format(campaign.goalAmount);
 
                 return (
                   <div
