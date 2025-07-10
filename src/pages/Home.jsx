@@ -30,8 +30,6 @@ export default function Home() {
     };
   }, []);
 
-  console.log(campaigns)
-
   return (
     <div className="bg-white text-gray-800">
       {/* Hero Section */}

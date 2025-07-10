@@ -45,18 +45,29 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
+      console.log("🔄 [Logout] Sending logout request...");
+      const res = await axios.post(
         `${import.meta.env.VITE_BACKEND}/logout`,
         {},
         { withCredentials: true }
       );
+
+      console.log("✅ [Logout] Server response:", res.data);
+
       dispatch(clearUser());
       setNotifications([]);
-      navigate("/");
+
+      console.log("🧹 [Logout] Redux and UI state cleared");
+
+      // Force reload so /me doesn't re-authenticate
+      window.location.href = "/";
+      window.location.reload();
     } catch (err) {
-      console.error("Logout failed", err);
+      console.error("❌ [Logout] Logout failed", err);
     }
   };
+  
+  
 
   const isAdmin = user?.role === "admin";
   const isCampaignOwner = user?.role === "campaignOwner";
