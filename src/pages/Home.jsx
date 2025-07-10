@@ -122,11 +122,11 @@ export default function Home() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {campaigns
             .filter(
-              (c) =>
-                typeof c.raised === "number" &&
-                typeof c.goal === "number" &&
-                c.goal > 0 &&
-                c.raised / c.goal > 0.5
+              (campaign) =>
+                typeof campaign.raised === "number" &&
+                typeof campaign.goal === "number" &&
+                campaign.goal > 0 &&
+                campaign.raised / campaign.goal > 0.5
             )
             .map((campaign) => {
               const percentage = Math.min(
@@ -230,7 +230,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Ripple of Impact Section */}
       <section className="relative py-24 bg-gradient-to-br from-green-50 to-white overflow-hidden">
         <div className="max-w-5xl mx-auto text-center px-6">
