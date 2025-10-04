@@ -1,49 +1,63 @@
 # 🚀 CrowdSpark Frontend
 
+![CrowdSpark Preview](https://github.com/user-attachments/assets/placeholder-frontend.png)
+
 **CrowdSpark** is a modern **MERN-based crowdfunding platform**. This repository contains the **frontend**, built with **React**, **Redux Toolkit**, **Tailwind CSS**, and integrated with features like role-based dashboards, campaign discovery, real-time notifications, and secure payments.
+
+🔗 **Live Demo:** [https://crowdspark-frontend-gamma.vercel.app/](https://crowdspark-frontend-gamma.vercel.app/)
 
 For the backend, visit the [CrowdSpark Backend Repository](https://github.com/Anirudh-Singh-26/crowdspark-backend).
 Frontend repo: [CrowdSpark Frontend](https://github.com/Anirudh-Singh-26/crowdspark-frontend)
 
 ---
 
-## 🔗 Live Demo
+## 🌟 Project Overview
 
-[🌐 CrowdSpark Live Demo](https://crowdspark-frontend-gamma.vercel.app/)
+CrowdSpark frontend is designed to offer a seamless and engaging user experience for crowdfunding. It provides **role-based dashboards**, campaign management, secure payments, and **real-time notifications** using Socket.IO.
 
----
-
-## 🗂 Related Repositories
-
-* **Backend:** [CrowdSpark Backend](https://github.com/Anirudh-Singh-26/crowdspark-backend)
-* **Frontend:** [CrowdSpark Frontend](https://github.com/Anirudh-Singh-26/crowdspark-frontend)
+![Dashboard Preview](https://github.com/user-attachments/assets/placeholder-dashboard.png)
 
 ---
 
-## 🛠 Tech Stack
+## 🛠 Technology Stack
 
-* **Frontend:** React + Vite, Tailwind CSS, Redux Toolkit, React Router
-* **Networking:** Axios, Socket.IO Client
-* **Payments:** Razorpay Integration
+* **React** + **Vite**: Modern frontend framework and build tool
+* **Tailwind CSS**: Utility-first CSS for rapid and responsive design
+* **Redux Toolkit**: State management
+* **Axios** & **Socket.IO Client**: Networking and real-time updates
+* **Razorpay Integration**: Secure payment handling
 
 ---
 
-## ⚙️ Setup Instructions
+## ✨ Key Features
 
-### 1️⃣ Clone the Repository
+* Role-based dashboards for Admin, Campaign Owner, and Backer
+* Authentication with HttpOnly cookies
+* Campaign management (create, edit, discover)
+* Razorpay payment integration
+* Invoice downloads
+* Role upgrade request system
+* Real-time notifications
+* Admin panel for user and campaign management
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Anirudh-Singh-26/crowdspark-frontend.git
 cd crowdspark-frontend
 ```
 
-### 2️⃣ Install Dependencies
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3️⃣ Setup Environment Variables
+### 3. Setup Environment Variables
 
 Create a `.env` file in the root directory:
 
@@ -51,70 +65,32 @@ Create a `.env` file in the root directory:
 VITE_BACKEND=https://crowdspark-backend.onrender.com
 ```
 
-### 4️⃣ Start Development Server
+### 4. Run Development Server
 
 ```bash
 npm run dev
 ```
 
----
-
-## 🌟 Key Features
-
-* 🔑 **Secure Authentication** with HttpOnly Cookies
-* 🧑‍💼 **Role-Based Dashboards** (Admin, Campaign Owner, Backer)
-* 📢 **Campaign Management:** Create, Edit, Discover
-* 💰 **Razorpay Payment Integration**
-* 📄 **Invoice Generation & Download**
-* 📬 **Role Upgrade Request System**
-* 🔔 **Real-Time Notifications** via Socket.IO
-* 📊 **Admin Panel:** User & Campaign Management
+Open [http://localhost:5173](http://localhost:5173) to view the frontend locally.
 
 ---
 
-## 🖼 Screenshots
+## 🖼 Additional Screenshots
 
-<div align="center">
-  <img src="/public/CrowdSparkHero.png" alt="Landing Page" width="600" />
-  <p style="text-align:center;">Landing Page</p>
-  <img src="/public/CrowdSparkDash.png" alt="Dashboard" width="600" />
-  <p style="text-align:center;">Dashboard</p>
-</div>
+![Landing Page Preview](https://github.com/user-attachments/assets/placeholder-landing.png)
+![Campaign Page Preview](https://github.com/user-attachments/assets/placeholder-campaign.png)
+
+*Explore the frontend directly on the live demo to see full functionality!*
 
 ---
 
-## 📁 Folder Structure
+## 👤 Author
 
-```
-crowdspark-frontend/
-├─ public/
-│  ├─ CrowdSparkHero.png
-│  ├─ CrowdSparkDash.png
-│  └─ index.html
-├─ src/
-│  ├─ assets/
-│  ├─ components/
-│  ├─ context/
-│  ├─ pages/
-│  ├─ services/
-│  ├─ App.jsx
-│  └─ main.jsx
-├─ .env
-├─ package.json
-├─ tailwind.config.js
-└─ vite.config.js
-```
+Anirudh Singh Rathore
+[GitHub Profile](https://github.com/Anirudh-Singh-26)
 
 ---
 
-## 📦 Build for Production
-
-```bash
-npm run build
-```
-
----
-
-## 📘 License
+## 📄 License
 
 MIT © Anirudh Singh Rathore
