@@ -1,66 +1,112 @@
-# 🎨 CrowdSpark Frontend
+# 🌟 CrowdSpark Frontend
 
-This is the frontend for **CrowdSpark**, a MERN-based crowdfunding platform. It is built using **React**, **Redux**, **Tailwind CSS**, and integrates features such as role-based dashboards, campaign discovery, real-time notifications, and secure payments.
+**CrowdSpark** is a modern **MERN-based crowdfunding platform**. This repository contains the **frontend**, built with **React**, **Redux Toolkit**, **Tailwind CSS**, and integrated with features like role-based dashboards, campaign discovery, real-time notifications, and secure payments.
 
-For the Backend part Please visit the CrowdSpard-backend repo or link-> https://github.com/Anirudh-Singh-26/crowdspark-backend
+For the backend, visit the [CrowdSpark Backend Repository](https://github.com/Anirudh-Singh-26/crowdspark-backend).
+Frontend repo: [CrowdSpark Frontend](https://github.com/Anirudh-Singh-26/crowdspark-frontend)
+
+---
 
 ## 🔗 Live Demo
 
-[https://crowdspark-frontend.vercel.app](https://crowdspark-frontend.vercel.app)
+[🌐 Visit Live Demo](https://crowdspark-frontend-gamma.vercel.app/)
 
-## 📦 Tech Stack
+---
 
-- React + Vite
-- Redux Toolkit
-- Tailwind CSS
-- Axios
-- Socket.IO Client
-- React Router
-- Razorpay Integration
+## 🗂 Related Repositories
+
+* **Backend:** [CrowdSpark Backend](https://github.com/Anirudh-Singh-26/crowdspark-backend)
+
+---
+
+## 🛠 Tech Stack
+
+* **Frontend:** React + Vite, Tailwind CSS, Redux Toolkit, React Router
+* **Networking:** Axios, Socket.IO Client
+* **Payments:** Razorpay Integration
+
+---
 
 ## ⚙️ Setup Instructions
 
-### 1. Clone the Repository
+### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/YourUsername/crowdspark-frontend.git
+git clone https://github.com/Anirudh-Singh-26/crowdspark-frontend.git
 cd crowdspark-frontend
 ```
 
-### 2. Install Dependencies
+### 2️⃣ Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Setup `.env` File
+### 3️⃣ Setup Environment Variables
+
+Create a `.env` file in the root directory:
 
 ```env
 VITE_BACKEND=https://crowdspark-backend.onrender.com
 ```
 
-## 🚀 Start the Development Server
+### 4️⃣ Start the Development Server
 
 ```bash
 npm run dev
 ```
 
-## 🌟 Features
+---
 
-- 🔐 Authentication with HttpOnly Cookies
-- 🧠 Role-Based Dashboard (Admin, Campaign Owner, Backer)
-- 📢 Campaign Management
-- 💸 Razorpay Payments
-- 📄 Invoice Downloads
-- 📬 Role Upgrade Request System
-- 🔔 Real-Time Notifications via Socket.IO
-- 📊 Admin Panel for user & campaign control
+## 🌟 Key Features
+
+* 🔑 **Authentication** with HttpOnly Cookies
+* 🧑‍💼 **Role-Based Dashboard** for Admins, Campaign Owners, and Backers
+* 📢 **Campaign Management** (Create, Edit, Discover)
+* 💰 **Secure Payments** via Razorpay
+* 📄 **Invoice Downloads**
+* 📬 **Role Upgrade Request System**
+* 🔔 **Real-Time Notifications** powered by Socket.IO
+* 📊 **Admin Panel** to manage users and campaigns
+
+---
+
+## 📁 Folder Structure
+
+```
+crowdspark-frontend/
+├─ public/
+│  └─ index.html
+├─ src/
+│  ├─ assets/
+│  ├─ components/
+│  ├─ context/
+│  ├─ pages/
+│  ├─ services/
+│  ├─ App.jsx
+│  └─ main.jsx
+├─ .env
+├─ package.json
+├─ tailwind.config.js
+└─ vite.config.js
+```
+
+---
 
 ## 📦 Build for Production
 
 ```bash
 npm run build
 ```
+
+---
+
+## 🖼 Screenshots (Optional)
+
+![Landing Page](/crowdspark-frontend/public/CrowdSparkHero.png)
+![Dashboard](/crowdspark-frontend/public/CrowdSparkDash.png)
+
+---
 
 ## 📘 License
 
