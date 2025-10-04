@@ -1,4 +1,4 @@
-# 🚀 CrowdSpark Frontend
+# 🧠 CrowdSpark Frontend
 
 ![CrowdSpark Preview](/public/CrowdSparkHero.png)
 
