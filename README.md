@@ -7,7 +7,6 @@
 🔗 **Live Demo:** [https://crowdspark-frontend-gamma.vercel.app/](https://crowdspark-frontend-gamma.vercel.app/)
 
 For the backend, visit the [CrowdSpark Backend Repository](https://github.com/Anirudh-Singh-26/crowdspark-backend).
-Frontend repo: [CrowdSpark Frontend](https://github.com/Anirudh-Singh-26/crowdspark-frontend)
 
 ---
 
@@ -76,9 +75,6 @@ Open [http://localhost:5173](http://localhost:5173) to view the frontend locally
 ---
 
 ## 🖼 Additional Screenshots
-
-![Landing Page Preview](https://github.com/user-attachments/assets/placeholder-landing.png)
-![Campaign Page Preview](https://github.com/user-attachments/assets/placeholder-campaign.png)
 
 *Explore the frontend directly on the live demo to see full functionality!*
 
