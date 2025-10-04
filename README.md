@@ -103,8 +103,8 @@ npm run build
 
 ## 🖼 Screenshots (Optional)
 
-![Landing Page](/crowdspark-frontend/public/CrowdSparkHero.png)
-![Dashboard](/crowdspark-frontend/public/CrowdSparkDash.png)
+![Landing Page](/public/CrowdSparkHero.png)
+![Dashboard](/public/CrowdSparkDash.png)
 
 ---
 
