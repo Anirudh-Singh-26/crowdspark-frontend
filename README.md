@@ -1,6 +1,6 @@
 # 🚀 CrowdSpark Frontend
 
-![CrowdSpark Preview](https://github.com/user-attachments/assets/placeholder-frontend.png)
+![CrowdSpark Preview](/public/CrowdSparkHero.png)
 
 **CrowdSpark** is a modern **MERN-based crowdfunding platform**. This repository contains the **frontend**, built with **React**, **Redux Toolkit**, **Tailwind CSS**, and integrated with features like role-based dashboards, campaign discovery, real-time notifications, and secure payments.
 
@@ -15,7 +15,7 @@ Frontend repo: [CrowdSpark Frontend](https://github.com/Anirudh-Singh-26/crowdsp
 
 CrowdSpark frontend is designed to offer a seamless and engaging user experience for crowdfunding. It provides **role-based dashboards**, campaign management, secure payments, and **real-time notifications** using Socket.IO.
 
-![Dashboard Preview](https://github.com/user-attachments/assets/placeholder-dashboard.png)
+![Dashboard Preview](/public/CrowdSparkDash.png)
 
 ---
 
